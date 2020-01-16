@@ -2,23 +2,22 @@ package Code.Classes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
-public class Counter<T extends Countable> implements Countable {
+public class Counter<T extends Countable> {
 
+    private Predicate predicate;
     private List<T> counterList = new ArrayList<T>();
 
-    public int getCount() {
-
-        int count = 0;
-
-        for (T items : counterList) {
-            count += items.getCount();
-        }
-
-        return count;
+    public Counter(Predicate predicate) {
+        this.predicate = predicate;
     }
 
-    public void add (T items) {
-        counterList.add(items);
+    public int getCount() {
+        return counterList.stream().map(o -> o.getCount(predicate)).mapToInt(Integer::intValue).sum();
+    }
+
+    public void add (T countable) {
+        counterList.add(countable);
     }
 }
